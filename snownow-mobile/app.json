@@ -1,8 +1,10 @@
 {
   "expo": {
-    "name": "snowpulse-mobile",
+    "name": "SnowNow",
     "slug": "snowpulse-mobile",
+    "scheme": "snownow",
     "version": "1.0.0",
+    "plugins": ["expo-router"],
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
