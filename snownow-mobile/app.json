@@ -4,7 +4,10 @@
     "slug": "snowpulse-mobile",
     "scheme": "snownow",
     "version": "1.0.0",
-    "plugins": ["expo-router"],
+    "plugins": [
+      "expo-router",
+      "expo-status-bar"
+    ],
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
