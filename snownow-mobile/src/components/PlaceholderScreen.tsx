@@ -1,9 +1,13 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { colors } from '../theme';
+import { Palette, useTheme } from '../theme';
 
 // Pantalla provisional per als mòduls que encara no tenen backend
 export function PlaceholderScreen({ title, description }: { title: string; description: string }) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
+
   return (
     <View style={styles.container}>
       <Ionicons name="construct-outline" size={48} color={colors.textMuted} />
@@ -13,7 +17,7 @@ export function PlaceholderScreen({ title, description }: { title: string; descr
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: Palette) => StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',

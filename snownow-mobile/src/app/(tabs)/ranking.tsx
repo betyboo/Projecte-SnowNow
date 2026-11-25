@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -9,7 +9,7 @@ import {
   View,
 } from 'react-native';
 import { getLeaderboard, LeaderboardEntry, LeaderboardMetric } from '../../api/telemetry';
-import { colors } from '../../theme';
+import { Palette, useTheme } from '../../theme';
 
 // Cada mètrica del backend amb l'etiqueta i com es mostra el seu valor
 const metrics: { key: LeaderboardMetric; label: string; format: (e: LeaderboardEntry) => string }[] = [
@@ -18,9 +18,11 @@ const metrics: { key: LeaderboardMetric; label: string; format: (e: LeaderboardE
   { key: 'vertical', label: 'Desnivell', format: (e) => `${e.totalVerticalDropMeters} m` },
 ];
 
-const medalColors = [colors.gold, colors.silver, colors.bronze];
-
 export default function RankingScreen() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
+  const medalColors = [colors.gold, colors.silver, colors.bronze];
+
   const [metric, setMetric] = useState<LeaderboardMetric>('speed');
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -80,17 +82,19 @@ export default function RankingScreen() {
           data={entries}
           keyExtractor={(item) => item.skierId}
           contentContainerStyle={styles.list}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />
+          }
           ListEmptyComponent={<Text style={styles.empty}>Encara no hi ha sessions registrades.</Text>}
-          renderItem={({ item }) => (
+          renderItem={({ item }) => {
+            const medal = medalColors[item.rank - 1];
+            return (
             <View style={styles.row}>
-              <View
-                style={[
-                  styles.rank,
-                  { backgroundColor: medalColors[item.rank - 1] ?? colors.border },
-                ]}
-              >
-                <Text style={styles.rankText}>{item.rank}</Text>
+              {/* Del 4t en endavant no hi ha medalla: fons suau i text normal perquè es llegeixi */}
+              <View style={[styles.rank, { backgroundColor: medal ?? colors.chip }]}>
+                <Text style={[styles.rankText, { color: medal ? '#FFFFFF' : colors.text }]}>
+                  {item.rank}
+                </Text>
               </View>
               <View style={styles.info}>
                 <Text style={styles.name}>{item.skierName}</Text>
@@ -100,21 +104,23 @@ export default function RankingScreen() {
               </View>
               <Text style={styles.value}>{current.format(item)}</Text>
             </View>
-          )}
+            );
+          }}
         />
       )}
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+// Els estils depenen del mode (clar/fosc), per això es creen a partir de la paleta
+const makeStyles = (colors: Palette) => StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   selector: {
     flexDirection: 'row',
     margin: 16,
     padding: 4,
     borderRadius: 10,
-    backgroundColor: colors.border,
+    backgroundColor: colors.chip,
   },
   segment: { flex: 1, paddingVertical: 8, borderRadius: 8, alignItems: 'center' },
   segmentActive: { backgroundColor: colors.card },
@@ -123,7 +129,7 @@ const styles = StyleSheet.create({
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24 },
   error: { color: colors.danger, textAlign: 'center', marginBottom: 12 },
   retry: { paddingHorizontal: 16, paddingVertical: 10, borderRadius: 8, backgroundColor: colors.primary },
-  retryText: { color: '#fff', fontWeight: '600' },
+  retryText: { color: colors.onPrimary, fontWeight: '600' },
   list: { paddingHorizontal: 16, paddingBottom: 24, gap: 8 },
   empty: { textAlign: 'center', color: colors.textMuted, marginTop: 32 },
   row: {
@@ -133,10 +139,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: colors.card,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.cardBorder,
   },
   rank: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
-  rankText: { color: '#fff', fontWeight: '700' },
+  rankText: { fontWeight: '700' },
   info: { flex: 1, marginHorizontal: 12 },
   name: { fontSize: 16, fontWeight: '600', color: colors.text },
   resort: { fontSize: 13, color: colors.textMuted, marginTop: 2 },

@@ -1,6 +1,7 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Tabs } from 'expo-router';
-import { colors } from '../../theme';
+import { ThemeToggle } from '../../components/ThemeToggle';
+import { useTheme } from '../../theme';
 
 type IconName = keyof typeof Ionicons.glyphMap;
 
@@ -13,12 +14,19 @@ const tabs: { name: string; title: string; icon: IconName }[] = [
 ];
 
 export default function TabLayout() {
+  const { colors } = useTheme();
+
   return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: colors.primary,
-        headerStyle: { backgroundColor: colors.card },
+        tabBarInactiveTintColor: colors.tabInactive,
+        tabBarStyle: { backgroundColor: colors.card, borderTopColor: colors.border },
+        // Glacera: la capçalera és del mateix color que el fons, sense línia de separació
+        headerStyle: { backgroundColor: colors.background },
+        headerShadowVisible: false,
         headerTitleStyle: { color: colors.text },
+        headerRight: () => <ThemeToggle />,
       }}
     >
       {tabs.map((tab) => (
