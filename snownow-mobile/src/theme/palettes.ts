@@ -18,6 +18,12 @@ export interface Palette {
   gold: string;
   silver: string;
   bronze: string;
+  // Colors de dificultat de les pistes (estàndard europeu)
+  slopeGreen: string;
+  slopeBlue: string;
+  slopeRed: string;
+  slopeBlack: string;
+  slopeBlackBorder: string; // perquè el punt negre es vegi també en fosc
 }
 
 export const palettes: Record<ColorScheme, Palette> = {
@@ -36,6 +42,11 @@ export const palettes: Record<ColorScheme, Palette> = {
     gold: '#D4A017',
     silver: '#8E9AA6',
     bronze: '#B0703A',
+    slopeGreen: '#2E9E5B',
+    slopeBlue: '#1F6FE0',
+    slopeRed: '#D64545',
+    slopeBlack: '#1B1F24',
+    slopeBlackBorder: '#1B1F24',
   },
   dark: {
     primary: '#5AA7F2',
@@ -52,5 +63,10 @@ export const palettes: Record<ColorScheme, Palette> = {
     gold: '#D4A017',
     silver: '#8E9AA6',
     bronze: '#B0703A',
+    slopeGreen: '#3DBA72',
+    slopeBlue: '#4C8DF0',
+    slopeRed: '#EE6060',
+    slopeBlack: '#05080D',
+    slopeBlackBorder: '#8FA3BC',
   },
 };
